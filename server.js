@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { DatabaseSync } = require('node:sqlite');
 const ExcelJS = require('exceljs');
