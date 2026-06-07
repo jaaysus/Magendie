@@ -194,33 +194,33 @@ function App() {
     }
   };
 
-  if (!studentName) {
-    return <EntryScreen onStart={startLab} />;
-  }
-
   return (
     <>
       <LabHeader studentName={studentName} onOpenTeacher={() => setIsTeacherModalOpen(true)} />
-      <div id="app-container">
-        <LabZone
-          tool={tool}
-          onSelectTool={setTool}
-          completedExperiments={completedExperiments}
-          onInteract={handleInteract}
-          currentCut={currentCut}
-          alertMsg={alertMsg}
-          animationTrigger={animationTrigger}
-        />
-        <NotebookZone
-          tool={tool}
-          observation={observation}
-          qcm={qcm}
-          onValidateQCM={handleValidateQCM}
-          completedExperiments={completedExperiments}
-          savingStatus={savingStatus}
-          finalScore={finalScore}
-        />
-      </div>
+      {!studentName ? (
+        <EntryScreen onStart={startLab} />
+      ) : (
+        <div id="app-container">
+          <LabZone
+            tool={tool}
+            onSelectTool={setTool}
+            completedExperiments={completedExperiments}
+            onInteract={handleInteract}
+            currentCut={currentCut}
+            alertMsg={alertMsg}
+            animationTrigger={animationTrigger}
+          />
+          <NotebookZone
+            tool={tool}
+            observation={observation}
+            qcm={qcm}
+            onValidateQCM={handleValidateQCM}
+            completedExperiments={completedExperiments}
+            savingStatus={savingStatus}
+            finalScore={finalScore}
+          />
+        </div>
+      )}
       <TeacherModal isOpen={isTeacherModalOpen} onClose={() => setIsTeacherModalOpen(false)} />
     </>
   );

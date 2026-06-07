@@ -127,9 +127,10 @@ body {
 
 /* ─── MAIN LAB ──────────────────────────────────────────────────────── */
 header {
+    position: relative;
     background-color: var(--primary); color: white;
     padding: 12px 20px; text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 10;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 1100;
     display: flex; align-items: center; justify-content: space-between;
 }
 header h1 { font-family: 'Space Mono', monospace; font-size: 1.1rem; flex: 1; }
