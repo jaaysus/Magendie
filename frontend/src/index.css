@@ -134,7 +134,7 @@ header {
     display: flex; align-items: center; justify-content: space-between;
 }
 header h1 { font-family: 'Space Mono', monospace; font-size: 1.1rem; flex: 1; }
-#student-badge {
+#student-badge, .student-badge-style {
     background: rgba(255,255,255,0.12);
     padding: 6px 14px; border-radius: 20px;
     font-size: 0.85rem; font-weight: 700;

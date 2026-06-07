@@ -2,7 +2,7 @@ import { useState } from 'react';
 import EntryScreen from './components/EntryScreen';
 import TeacherModal from './components/TeacherModal';
 import LabHeader from './components/LabHeader';
-import LabZone from './components/LabZone';
+import Magendie from './components/Magendie';
 import NotebookZone from './components/NotebookZone';
 import './App.css';
 
@@ -62,6 +62,7 @@ function App() {
   const [animationTrigger, setAnimationTrigger] = useState(0);
   const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>({ dorsal: 0, ventral: 0, nerf: 0 });
   const [lockInteraction, setLockInteraction] = useState(false);
+  const [currentExperiment, setCurrentExperiment] = useState('magendie');
 
   const showAlert = (msg: string) => {
     setAlertMsg(msg);
@@ -196,20 +197,27 @@ function App() {
 
   return (
     <>
-      <LabHeader studentName={studentName} onOpenTeacher={() => setIsTeacherModalOpen(true)} />
+      <LabHeader studentName={studentName} onOpenTeacher={() => setIsTeacherModalOpen(true)} currentExperiment={currentExperiment} onSelectExperiment={setCurrentExperiment} />
       {!studentName ? (
         <EntryScreen onStart={startLab} />
       ) : (
         <div id="app-container">
-          <LabZone
-            tool={tool}
-            onSelectTool={setTool}
-            completedExperiments={completedExperiments}
-            onInteract={handleInteract}
-            currentCut={currentCut}
-            alertMsg={alertMsg}
-            animationTrigger={animationTrigger}
-          />
+          {currentExperiment === 'magendie' ? (
+            <Magendie
+              tool={tool}
+              onSelectTool={setTool}
+              completedExperiments={completedExperiments}
+              onInteract={handleInteract}
+              currentCut={currentCut}
+              alertMsg={alertMsg}
+              animationTrigger={animationTrigger}
+            />
+          ) : (
+            <div style={{ padding: '20px', border: '2px dashed #ccc', margin: '20px', textAlign: 'center' }}>
+              <h2>Expérience : {currentExperiment}</h2>
+              <p>Placeholder for {currentExperiment}</p>
+            </div>
+          )}
           <NotebookZone
             tool={tool}
             observation={observation}
@@ -218,6 +226,7 @@ function App() {
             completedExperiments={completedExperiments}
             savingStatus={savingStatus}
             finalScore={finalScore}
+            currentExperiment={currentExperiment}
           />
         </div>
       )}

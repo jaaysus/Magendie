@@ -10,7 +10,7 @@ interface LabZoneProps {
   animationTrigger: number;
 }
 
-const LabZone: React.FC<LabZoneProps> = ({
+const Magendie: React.FC<LabZoneProps> = ({
   tool,
   onSelectTool,
   completedExperiments,
@@ -269,4 +269,4 @@ const LabZone: React.FC<LabZoneProps> = ({
   );
 };
 
-export default LabZone;
+export default Magendie;
