@@ -3,6 +3,7 @@ import EntryScreen from './components/EntryScreen';
 import TeacherModal from './components/TeacherModal';
 import LabHeader from './components/LabHeader';
 import Magendie from './components/Magendie';
+import Motricite from './components/Motricite';
 import NotebookZone from './components/NotebookZone';
 import './App.css';
 
@@ -195,8 +196,10 @@ function App() {
     }
   };
 
+  const isGreenTheme = currentExperiment === 'motricite';
+
   return (
-    <>
+    <div className={isGreenTheme ? 'green-theme' : ''}>
       <LabHeader studentName={studentName} onOpenTeacher={() => setIsTeacherModalOpen(true)} currentExperiment={currentExperiment} onSelectExperiment={setCurrentExperiment} />
       {!studentName ? (
         <EntryScreen onStart={startLab} />
@@ -212,6 +215,8 @@ function App() {
               alertMsg={alertMsg}
               animationTrigger={animationTrigger}
             />
+          ) : currentExperiment === 'motricite' ? (
+            <Motricite />
           ) : (
             <div style={{ padding: '20px', border: '2px dashed #ccc', margin: '20px', textAlign: 'center' }}>
               <h2>Expérience : {currentExperiment}</h2>
@@ -231,7 +236,7 @@ function App() {
         </div>
       )}
       <TeacherModal isOpen={isTeacherModalOpen} onClose={() => setIsTeacherModalOpen(false)} />
-    </>
+    </div>
   );
 }
 

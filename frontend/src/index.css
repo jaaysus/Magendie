@@ -21,6 +21,38 @@ body {
     overflow: hidden;
 }
 
+/* ─── MAIN LAB ──────────────────────────────────────────────────────── */
+header {
+    position: relative;
+    background-color: var(--primary); color: white;
+    padding: 12px 20px; text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 1100;
+    display: flex; align-items: center; justify-content: space-between;
+}
+header h1 { font-family: 'Space Mono', monospace; font-size: 1.1rem; flex: 1; }
+#student-badge, .student-badge-style {
+    background: rgba(255,255,255,0.12);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 700;
+    white-space: nowrap;
+}
+.nav-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.8);
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.5); }
+.nav-btn.active { background: rgba(255,255,255,0.2); color: white; border-color: white; }
+
+#app-container { display: flex; flex: 1; overflow: hidden; }
+
 /* ─── ENTRY SCREEN ─────────────────────────────────────────────────── */
 #entry-screen {
     position: fixed; inset: 0; z-index: 1000;
@@ -125,37 +157,18 @@ body {
 .btn-secondary:hover { background: #f1f2f6; }
 #teacher-error { color: var(--danger); font-size: 0.85rem; margin-bottom: 12px; display: none; font-weight: 500; }
 
-/* ─── MAIN LAB ──────────────────────────────────────────────────────── */
-header {
-    position: relative;
-    background-color: var(--primary); color: white;
-    padding: 12px 20px; text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 1100;
-    display: flex; align-items: center; justify-content: space-between;
+.green-theme header {
+    background-color: var(--primary-green, #0f9b72);
 }
-header h1 { font-family: 'Space Mono', monospace; font-size: 1.1rem; flex: 1; }
-#student-badge, .student-badge-style {
-    background: rgba(255,255,255,0.12);
-    padding: 6px 14px; border-radius: 20px;
-    font-size: 0.85rem; font-weight: 700;
-    white-space: nowrap;
+.green-theme #notebook-zone {
+    border-left: 5px solid var(--primary-green, #0f9b72);
 }
-.nav-btn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: rgba(255,255,255,0.8);
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.2s;
-    white-space: nowrap;
+.green-theme .notebook-header {
+    background-color: var(--primary-green, #0f9b72);
 }
-.nav-btn:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.5); }
-.nav-btn.active { background: rgba(255,255,255,0.2); color: white; border-color: white; }
-
-#app-container { display: flex; flex: 1; overflow: hidden; }
+.green-theme .status-box {
+    border-left: 5px solid var(--primary-green, #0f9b72);
+}
 
 /* ─── LAB ZONE ──────────────────────────────────────────────────────── */
 #lab-zone {
