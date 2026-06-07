@@ -28,13 +28,7 @@ const LabHeader: React.FC<LabHeaderProps> = ({ studentName, onOpenTeacher, curre
               <button
                 key={item.id}
                 onClick={() => onSelectExperiment(item.id)}
-                style={{
-                  background: currentExperiment === item.id ? '#dfe6e9' : 'transparent',
-                  border: '1px solid #b2bec3',
-                  padding: '5px 10px',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
+                className={`nav-btn ${currentExperiment === item.id ? 'active' : ''}`}
               >
                 {item.label}
               </button>
@@ -47,7 +41,7 @@ const LabHeader: React.FC<LabHeaderProps> = ({ studentName, onOpenTeacher, curre
         {studentName && <span className="student-badge-style">👤 {studentName}</span>}
 
         {!isStudentLoggedIn && (
-          <button id="teacher-access-btn" onClick={onOpenTeacher}>
+          <button className="nav-btn" onClick={onOpenTeacher}>
             👩‍🏫 Enseignant
           </button>
         )}
