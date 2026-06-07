@@ -114,6 +114,14 @@ app.get('/api/teacher/stats', (req, res) => {
   res.json({ sessions, answers: allAnswers });
 });
 
+app.post('/api/teacher/clear-db', (req, res) => {
+  const { password } = req.body;
+  if (password !== TEACHER_PASSWORD) return res.status(401).json({ error: 'Non autorisé' });
+
+  db.exec('DELETE FROM answers; DELETE FROM sessions;');
+  res.json({ ok: true });
+});
+
 app.get('/api/teacher/export', async (req, res) => {
   const { password } = req.query;
   if (password !== TEACHER_PASSWORD) return res.status(401).json({ error: 'Non autorisé' });

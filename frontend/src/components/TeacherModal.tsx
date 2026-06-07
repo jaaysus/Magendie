@@ -60,6 +60,26 @@ const TeacherModal: React.FC<TeacherModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleClearDB = async () => {
+    if (!window.confirm('Êtes-vous sûr de vouloir effacer TOUS les résultats ? Cette action est irréversible.')) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/teacher/clear-db', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      if (res.ok) {
+        setStats({ sessions: [], answers: [] });
+        alert('Base de données effacée.');
+      }
+    } catch {
+      alert('Erreur lors de l\'effacement.');
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -107,7 +127,10 @@ const TeacherModal: React.FC<TeacherModalProps> = ({ isOpen, onClose }) => {
                 <strong>{stats.sessions.length}</strong> étudiant(s) inscrit(s) · <strong>{stats.sessions.filter(s => s.finished_at).length}</strong> expérience(s) terminée(s)
               </div>
             )}
-            <button className="btn-secondary" style={{ marginTop: '16px', width: '100%' }} onClick={onClose}>Fermer</button>
+            <div className="teacher-btns" style={{ marginTop: '16px' }}>
+              <button className="btn-secondary" onClick={onClose}>Fermer</button>
+              <button className="btn-primary" style={{ background: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={handleClearDB}>Effacer DB</button>
+            </div>
           </div>
         )}
       </div>
