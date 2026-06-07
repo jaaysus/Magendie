@@ -50,6 +50,4 @@ To access the teacher panel, click **"👩‍🏫 Enseignant"** in the top-right
 ## Stack
 
 - **Backend**: Node.js + Express
-- **DB**: better-sqlite3 (zero-config, single file)
 - **Excel**: exceljs
-- **Frontend**: Vanilla HTML/CSS/JS (single file, no build step)
