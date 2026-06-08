@@ -50,8 +50,11 @@ const qcmData: Record<string, QCMItem> = {
 };
 
 function App() {
-  const [sessionId, setSessionId] = useState<number | null>(null);
-  const [studentName, setStudentName] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<number | null>(() => {
+    const saved = localStorage.getItem('lab_sessionId');
+    return saved ? parseInt(saved, 10) : null;
+  });
+  const [studentName, setStudentName] = useState<string | null>(() => localStorage.getItem('lab_studentName'));
   const [tool, setTool] = useState<'none' | 'scalpel' | 'electrode'>('none');
   const [completedExperiments, setCompletedExperiments] = useState<Set<string>>(new Set());
   const [currentCut, setCurrentCut] = useState<string | null>(null);
@@ -87,10 +90,23 @@ function App() {
       if (!res.ok) throw new Error(data.error || 'Erreur serveur');
       setSessionId(data.sessionId);
       setStudentName(name);
+      localStorage.setItem('lab_sessionId', data.sessionId.toString());
+      localStorage.setItem('lab_studentName', name);
     } catch (err) {
       showAlert('Erreur de connexion. Vérifiez le serveur.');
       throw err;
     }
+  };
+
+  const logout = () => {
+    setSessionId(null);
+    setStudentName(null);
+    localStorage.removeItem('lab_sessionId');
+    localStorage.removeItem('lab_studentName');
+    // Reset other states
+    setCompletedExperiments(new Set());
+    setTool('none');
+    setFinalScore(null);
   };
 
   const handleInteract = (zone: string) => {
@@ -201,7 +217,13 @@ function App() {
 
   return (
     <div className={isGreenTheme ? 'green-theme' : ''}>
-      <LabHeader studentName={studentName} onOpenTeacher={() => setIsTeacherModalOpen(true)} currentExperiment={currentExperiment} onSelectExperiment={setCurrentExperiment} />
+      <LabHeader 
+        studentName={studentName} 
+        onOpenTeacher={() => setIsTeacherModalOpen(true)} 
+        currentExperiment={currentExperiment} 
+        onSelectExperiment={setCurrentExperiment} 
+        onLogout={logout}
+      />
       {!studentName ? (
         <EntryScreen onStart={startLab} />
       ) : (

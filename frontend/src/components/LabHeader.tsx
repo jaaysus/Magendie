@@ -5,9 +5,10 @@ interface LabHeaderProps {
   onOpenTeacher: () => void;
   currentExperiment: string;
   onSelectExperiment: (exp: string) => void;
+  onLogout: () => void;
 }
 
-const LabHeader: React.FC<LabHeaderProps> = ({ studentName, onOpenTeacher, currentExperiment, onSelectExperiment }) => {
+const LabHeader: React.FC<LabHeaderProps> = ({ studentName, onOpenTeacher, currentExperiment, onSelectExperiment, onLogout }) => {
   const isStudentLoggedIn = Boolean(studentName);
   const navItems = [
     { id: 'magendie', label: 'Magendie Law' },
@@ -18,7 +19,17 @@ const LabHeader: React.FC<LabHeaderProps> = ({ studentName, onOpenTeacher, curre
 
   return (
     <header>
-      <div style={{ width: '120px' }}></div>
+      <div style={{ width: '120px' }}>
+        {studentName && (
+          <button 
+            className="nav-btn" 
+            onClick={onLogout}
+            style={{ borderColor: 'var(--danger)', color: 'var(--danger)' }}
+          >
+            🚪 Quitter
+          </button>
+        )}
+      </div>
 
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
         <h1>🔬 Virtual Lab</h1>

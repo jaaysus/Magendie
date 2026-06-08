@@ -303,8 +303,7 @@ app.get('/api/teacher/export', async (req, res) => {
 // ─── START ───────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`\n🔬 Laboratoire Bell-Magendie`);
+  console.log(`\n🔬 Laboratoire`);
   console.log(`   http://localhost:${PORT}`);
   console.log(`   Teacher password: ${TEACHER_PASSWORD}`);
-  console.log(`   Set TEACHER_PASSWORD env var to change it\n`);
 });

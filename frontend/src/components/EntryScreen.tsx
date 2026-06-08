@@ -27,8 +27,11 @@ const EntryScreen: React.FC<EntryScreenProps> = ({ onStart }) => {
     <div id="entry-screen">
       <div className="entry-card">
         <span className="entry-icon">🔬</span>
-        <h1>Laboratoire Bell-Magendie</h1>
-        <p>Découvrez les fonctions de la moelle épinière à travers les expériences historiques de François Magendie.</p>
+        <h1>🧪 Laboratoire Virtuel Bell-Magendie</h1>
+        <p>
+          Explorez la motricité involontaire à travers les expériences de Bell et Magendie.
+          Manipulez la simulation, observez les réflexes et découvrez le rôle de la moelle épinière.
+        </p>
         <div className="entry-input-group">
           <label htmlFor="student-name-input">Votre prénom et nom</label>
           <input
