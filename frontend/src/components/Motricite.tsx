@@ -1,20 +1,27 @@
-import React from 'react';
+import React from "react";
 
 interface MotriciteProps {
-  // Add props if necessary, based on functionality requirements
+  sessionId?: number | null;
 }
 
-const Motricite: React.FC<MotriciteProps> = () => {
+const Motricite: React.FC<MotriciteProps> = ({ sessionId }) => {
   return (
-    <div id="lab-zone" style={{ background: 'radial-gradient(circle, #ecf8f3, #d5e8df)' }}>
-      <div className="simulation-card" style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>🐸 Laboratoire Virtuel : La Motricité Involontaire</h2>
-        <p>Découvre le réflexe médullaire. (Expérience en cours d'intégration)</p>
-        {/* Placeholder for the SVG from the html file */}
-        <div className="svg-frame" style={{ marginTop: '20px' }}>
-          <p>SVG Simulation Placeholder</p>
-        </div>
-      </div>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+      }}
+    >
+      <iframe
+        src={`/motricite/index.html${sessionId ? `?sessionId=${sessionId}` : ''}`}
+        title="Motricite Lab"
+        style={{
+          width: "100%",
+          height: "100vh",
+          border: "none",
+        }}
+      />
     </div>
   );
 };

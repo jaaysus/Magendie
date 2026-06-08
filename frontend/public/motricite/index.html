@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🐸 Laboratoire Virtuel : La Motricité Involontaire</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="hero">
+    <div>
+      <h1>🐸 Laboratoire Virtual : La Motricité Involontaire</h1>
+      <p>Découvre expérimentalement le réflexe médullaire chez la grenouille spinale : observe, manipule, formule une hypothèse, puis valide chaque étape par un QCM.</p>
+    </div>
+    <div class="hero__badge">Niveau 3AC<br>Réflexe médullaire</div>
+  </header>
+
+  <main class="layout">
+    <section class="simulation-card">
+      <div class="sim-toolbar">
+        <span id="experimentBadge" class="pill">Expérience 1 / 6</span>
+        <button type="button" class="replay-button" onclick="restartWholeLab()">
+          <span>↺</span> Rejouer le bilan
+        </button>
+      </div>
+
+      <div class="svg-frame">
+        <svg id="frogSvg" class="frog-svg" viewBox="0 0 700 620">
+          <defs>
+            <linearGradient id="frogGradient" x1="0" x2="1" y1="0" x2="1">
+              <stop offset="0%" stop-color="#9be36f"></stop>
+              <stop offset="55%" stop-color="#63b95d"></stop>
+              <stop offset="100%" stop-color="#3f914d"></stop>
+            </linearGradient>
+
+            <filter id="acidGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur>
+              <feColorMatrix in="blur" type="matrix" values="1 0 0 0 1  0 0.6 0 0 0.45  0 0 0.1 0 0  0 0 0 0.9 0"></feColorMatrix>
+              <feMerge>
+                <feMergeNode></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+              </feMerge>
+            </filter>
+
+            <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+              <path d="M2,2 L10,6 L2,10 Z" fill="#1d8cf8"></path>
+            </marker>
+            <marker id="arrowViolet" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+              <path d="M2,2 L10,6 L2,10 Z" fill="#7c3aed"></path>
+            </marker>
+            <marker id="arrowRed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+              <path d="M2,2 L10,6 L2,10 Z" fill="#ef476f"></path>
+            </marker>
+          </defs>
+
+          <ellipse cx="350" cy="348" rx="230" ry="222" fill="rgba(10, 80, 55, 0.09)"></ellipse>
+
+          <g id="leftLeg" class="rear-leg left-rear-leg">
+            <path d="M292 348 C252 380, 225 424, 202 471" stroke="#58a84f" stroke-width="39" stroke-linecap="round" fill="none"></path>
+            <path d="M202 471 C184 514, 154 536, 116 526" stroke="#58a84f" stroke-width="33" stroke-linecap="round" fill="none"></path>
+            <ellipse cx="106" cy="525" rx="42" ry="20" transform="rotate(-12 106 525)" fill="#65ba58" stroke="#2d7d45" stroke-width="3"></ellipse>
+            <path class="bone-line" d="M286 356 C244 392, 219 433, 196 482"></path>
+            <ellipse id="leftCalfMuscle" class="muscle" cx="186" cy="474" rx="30" ry="15" transform="rotate(-58 186 474)"></ellipse>
+            <circle id="leftSkinPatch" class="skin-patch" cx="112" cy="524" r="18"></circle>
+          </g>
+
+          <g id="rightLeg" class="rear-leg right-rear-leg">
+            <path d="M408 348 C448 380, 475 424, 498 471" stroke="#58a84f" stroke-width="39" stroke-linecap="round" fill="none"></path>
+            <path d="M498 471 C516 514, 546 536, 584 526" stroke="#58a84f" stroke-width="33" stroke-linecap="round" fill="none"></path>
+            <ellipse cx="594" cy="525" rx="42" ry="20" transform="rotate(12 594 525)" fill="#65ba58" stroke="#2d7d45" stroke-width="3"></ellipse>
+            <path class="bone-line" d="M414 356 C456 392, 481 433, 504 482"></path>
+            <circle id="rightSkinPatch" class="skin-patch" cx="588" cy="524" r="18"></circle>
+          </g>
+
+          <ellipse class="frog-body" cx="350" cy="310" rx="126" ry="162"></ellipse>
+          <ellipse class="frog-belly" cx="350" cy="332" rx="70" ry="103"></ellipse>
+          <ellipse class="frog-body" cx="350" cy="154" rx="103" ry="73"></ellipse>
+          <circle class="frog-eye" cx="308" cy="123" r="21"></circle>
+          <circle class="frog-eye" cx="392" cy="123" r="21"></circle>
+          <circle class="frog-pupil" cx="309" cy="124" r="8"></circle>
+          <circle class="frog-pupil" cx="391" cy="124" r="8"></circle>
+          <path d="M314 172 C338 191, 365 191, 389 172" fill="none" stroke="#235a38" stroke-width="4" stroke-linecap="round"></path>
+
+          <line id="spinalCord" class="spinal-cord" x1="350" y1="172" x2="350" y2="414"></line>
+          <path class="nerve-outline" d="M342 305 C302 333, 254 379, 202 471"></path>
+          <path id="leftNerve" class="nerve" d="M342 305 C302 333, 254 379, 202 471"></path>
+          <path class="nerve-outline" d="M358 305 C398 333, 446 379, 498 471"></path>
+          <path id="rightNerve" class="nerve" d="M358 305 C398 333, 446 379, 498 471"></path>
+
+          <path id="flowLeftSensory" class="flow-path" d="M112 524 C145 510, 174 498, 202 471 C254 379, 302 333, 342 305"></path>
+          <path id="flowLeftMotor" class="flow-path motor" d="M342 305 C302 333, 254 379, 202 471 C174 498, 145 510, 112 524"></path>
+          <path id="flowRightSensory" class="flow-path" d="M588 524 C555 510, 526 498, 498 471 C446 379, 398 333, 358 305"></path>
+          <path id="flowRightMotor" class="flow-path motor" d="M358 305 C398 333, 446 379, 498 471 C526 498, 555 510, 588 524"></path>
+          <path id="flowPeripheralLeft" class="flow-path motor" d="M262 374 C240 406, 220 438, 186 474"></path>
+          <path id="flowCentralLeft" class="flow-path" d="M262 374 C286 342, 315 319, 342 305"></path>
+          <path id="flowBlockedAtCord" class="flow-path blocked" d="M588 524 C555 510, 526 498, 498 471 C446 379, 398 333, 358 305"></path>
+
+          <circle id="processingRingA" class="processing-ring" cx="350" cy="305" r="25"></circle>
+          <circle id="processingRingB" class="processing-ring" cx="350" cy="305" r="42"></circle>
+
+          <g id="leftNerveCut" class="cut-mark hidden">
+            <line x1="238" y1="355" x2="286" y2="393"></line>
+            <line x1="286" y1="355" x2="238" y2="393"></line>
+            <text x="223" y="346">section</text>
+          </g>
+
+          <g id="spinalDestroyed" class="blocked-x hidden">
+            <line x1="326" y1="278" x2="374" y2="326"></line>
+            <line x1="374" y1="278" x2="326" y2="326"></line>
+          </g>
+
+          <g id="blockedAtCord" class="blocked-x hidden">
+            <line x1="334" y1="292" x2="366" y2="324"></line>
+            <line x1="366" y1="292" x2="334" y2="324"></line>
+          </g>
+
+          <g id="muscleCut" class="cut-mark hidden">
+            <line x1="160" y1="448" x2="212" y2="500"></line>
+            <line x1="212" y1="448" x2="160" y2="500"></line>
+            <text x="136" y="435">muscle sectionné</text>
+          </g>
+
+          <g>
+            <rect class="label-box" x="468" y="86" width="158" height="34" rx="10"></rect>
+            <text class="label-text" x="479" y="108">Peau stimulée</text>
+            <line x1="505" y1="120" x2="588" y2="506" stroke="#b75d32" stroke-width="2" stroke-dasharray="4 4"></line>
+          </g>
+
+          <g>
+            <rect class="label-box" x="72" y="84" width="190" height="38" rx="10"></rect>
+            <text class="label-text" x="84" y="108">Nerf sciatique gauche</text>
+            <line x1="210" y1="122" x2="252" y2="382" stroke="#8a6d00" stroke-width="2" stroke-dasharray="4 4"></line>
+          </g>
+
+          <g>
+            <rect class="label-box" x="420" y="196" width="142" height="38" rx="10"></rect>
+            <text class="label-text" x="433" y="220">Moelle épinière</text>
+            <line x1="420" y1="216" x2="357" y2="260" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="4 4"></line>
+          </g>
+
+          <g>
+            <rect class="label-box" x="60" y="520" width="176" height="38" rx="10"></rect>
+            <text class="label-text" x="72" y="544">Muscle du mollet G.</text>
+            <line x1="185" y1="520" x2="185" y2="489" stroke="#9f1239" stroke-width="2" stroke-dasharray="4 4"></line>
+          </g>
+
+          <text class="small-label" x="78" y="588">Patte gauche</text>
+          <text class="small-label" x="535" y="588">Patte droite</text>
+        </svg>
+      </div>
+
+      <div class="legend">
+        <span><i class="dot skin"></i>Peau : récepteur sensitif</span>
+        <span><i class="dot nerve"></i>Nerf sciatique</span>
+        <span><i class="dot spinal"></i>Moelle épinière</span>
+        <span><i class="dot muscle"></i>Muscle effecteur</span>
+        <span><i class="dot signal"></i>Influx nerveux</span>
+        <span><i class="dot cut"></i>Section / interruption</span>
+      </div>
+    </section>
+
+    <aside class="lesson-card">
+      <nav id="experimentNav" class="experiment-nav"></nav>
+
+      <div class="progress-box">
+        <div class="progress-label">
+          <span>Progression expérimentale</span>
+          <span id="progressText">0 / 6 validées</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div id="lessonContent" class="lesson-content"></div>
+    </aside>
+  </main>
+
+  <footer>
+    Simulation pédagogique : les expériences respectent les résultats classiques de Bell-Magendie sur les grenouilles spinales.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

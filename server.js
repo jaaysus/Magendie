@@ -142,29 +142,34 @@ app.get('/api/teacher/export', async (req, res) => {
   }
 
   const experiments = ['dorsal', 'ventral', 'nerf'];
+  const motriciteExps = [1, 2, 3, 4, 5, 6].map(i => `motricite_${i}`);
+  
   const expLabels = {
-    dorsal: 'Racine Dorsale',
-    ventral: 'Racine Ventrale',
-    nerf: 'Nerf Rachidien'
+    dorsal: 'Magendie - Racine Dorsale',
+    ventral: 'Magendie - Racine Ventrale',
+    nerf: 'Magendie - Nerf Rachidien',
+    motricite_1: 'Motricité - Exp 1',
+    motricite_2: 'Motricité - Exp 2',
+    motricite_3: 'Motricité - Exp 3',
+    motricite_4: 'Motricité - Exp 4',
+    motricite_5: 'Motricité - Exp 5',
+    motricite_6: 'Motricité - Exp 6',
+    motricite_final: 'Motricité - Évaluation'
   };
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'Laboratoire Bell-Magendie';
+  wb.creator = 'Laboratoire Virtuel';
   wb.created = new Date();
 
   // ── Sheet 1: Summary ───────────────────────────────────────────────────────
-  const summary = wb.addWorksheet('Résumé');
+  const summary = wb.addWorksheet('Résumé Global');
   summary.columns = [
     { header: 'Étudiant', key: 'name', width: 25 },
     { header: 'Date', key: 'date', width: 20 },
-    { header: 'Score', key: 'score', width: 10 },
+    { header: 'Magendie Score', key: 'magendie_score', width: 15 },
+    { header: 'Motricité (sur 6)', key: 'motricite_progress', width: 18 },
+    { header: 'Motricité Quiz', key: 'motricite_quiz', width: 15 },
     { header: 'Terminé', key: 'finished', width: 12 },
-    { header: 'Racine Dorsale', key: 'dorsal', width: 20 },
-    { header: 'Tentatives Dorsale', key: 'dorsal_att', width: 20 },
-    { header: 'Racine Ventrale', key: 'ventral', width: 20 },
-    { header: 'Tentatives Ventrale', key: 'ventral_att', width: 22 },
-    { header: 'Nerf Rachidien', key: 'nerf', width: 20 },
-    { header: 'Tentatives Nerf', key: 'nerf_att', width: 18 },
   ];
 
   // Header style
@@ -172,76 +177,63 @@ app.get('/api/teacher/export', async (req, res) => {
     cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, name: 'Arial', size: 11 };
     cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2C3E50' } };
     cell.alignment = { horizontal: 'center', vertical: 'middle' };
-    cell.border = {
-      bottom: { style: 'medium', color: { argb: 'FF1A252F' } }
-    };
   });
-  summary.getRow(1).height = 28;
 
   for (const s of sessions) {
     const sa = answerMap[s.id] || {};
-    const isFinished = !!s.finished_at;
-    const scoreStr = isFinished ? `${s.score}/${s.total}` : 'En cours';
+    
+    // Magendie stats
+    const magendieCount = ['dorsal', 'ventral', 'nerf'].filter(e => sa[e] && sa[e].is_correct).length;
+    
+    // Motricité stats
+    const motriciteCount = [1, 2, 3, 4, 5, 6].filter(i => sa[`motricite_${i}`] && sa[`motricite_${i}`].is_correct).length;
+    const motriciteQuiz = sa['motricite_final'] ? sa['motricite_final'].answer_given : '—';
 
-    const row = summary.addRow({
+    summary.addRow({
       name: s.student_name,
       date: new Date(s.started_at).toLocaleString('fr-FR'),
-      score: scoreStr,
-      finished: isFinished ? 'Oui' : 'Non',
-      dorsal: sa.dorsal ? (sa.dorsal.is_correct ? '✓ Correct' : '✗ Incorrect') : '—',
-      dorsal_att: sa.dorsal ? sa.dorsal.attempts : '—',
-      ventral: sa.ventral ? (sa.ventral.is_correct ? '✓ Correct' : '✗ Incorrect') : '—',
-      ventral_att: sa.ventral ? sa.ventral.attempts : '—',
-      nerf: sa.nerf ? (sa.nerf.is_correct ? '✓ Correct' : '✗ Incorrect') : '—',
-      nerf_att: sa.nerf ? sa.nerf.attempts : '—',
+      magendie_score: `${magendieCount}/3`,
+      motricite_progress: `${motriciteCount}/6`,
+      motricite_quiz: motriciteQuiz,
+      finished: s.finished_at ? 'Oui' : 'Non',
     });
-
-    // Zebra rows
-    const bg = row.number % 2 === 0 ? 'FFF5F6FA' : 'FFFFFFFF';
-    row.eachCell(cell => {
-      cell.font = { name: 'Arial', size: 10 };
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
-      cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    });
-    // Name left-aligned
-    row.getCell('name').alignment = { vertical: 'middle', horizontal: 'left' };
-
-    // Color correct/incorrect cells
-    for (const exp of experiments) {
-      const cellKey = exp;
-      const cell = row.getCell(cellKey);
-      if (sa[exp]) {
-        if (sa[exp].is_correct) {
-          cell.font = { name: 'Arial', size: 10, color: { argb: 'FF1E8449' }, bold: true };
-        } else {
-          cell.font = { name: 'Arial', size: 10, color: { argb: 'FFC0392B' }, bold: true };
-        }
-      }
-    }
   }
 
-  // ── Sheet 2: Detailed answers ──────────────────────────────────────────────
-  const detail = wb.addWorksheet('Réponses Détaillées');
-  detail.columns = [
+  // ── Sheet 2: Magendie Details ──────────────────────────────────────────────
+  const magendieSheet = wb.addWorksheet('Détails Magendie');
+  magendieSheet.columns = [
     { header: 'Étudiant', key: 'name', width: 25 },
     { header: 'Expérience', key: 'exp', width: 20 },
     { header: 'Question', key: 'question', width: 55 },
     { header: 'Réponse donnée', key: 'answer', width: 45 },
     { header: 'Correct', key: 'correct', width: 12 },
     { header: 'Tentatives', key: 'attempts', width: 14 },
+  ];
+  
+  magendieSheet.getRow(1).eachCell(cell => {
+    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A3A4A' } };
+  });
+
+  // ── Sheet 3: Motricité Details ─────────────────────────────────────────────
+  const motriciteSheet = wb.addWorksheet('Détails Motricité');
+  motriciteSheet.columns = [
+    { header: 'Étudiant', key: 'name', width: 25 },
+    { header: 'Expérience', key: 'exp', width: 20 },
+    { header: 'Question', key: 'question', width: 55 },
+    { header: 'Réponse donnée', key: 'answer', width: 45 },
+    { header: 'Correct', key: 'correct', width: 12 },
     { header: 'Heure', key: 'time', width: 20 },
   ];
-
-  detail.getRow(1).eachCell(cell => {
-    cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, name: 'Arial', size: 11 };
-    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A3A4A' } };
-    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+  
+  motriciteSheet.getRow(1).eachCell(cell => {
+    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F9B72' } };
   });
-  detail.getRow(1).height = 28;
 
   for (const a of answers) {
     const session = sessions.find(s => s.id === a.session_id);
-    const row = detail.addRow({
+    const rowData = {
       name: session ? session.student_name : '?',
       exp: expLabels[a.experiment] || a.experiment,
       question: a.question,
@@ -249,19 +241,13 @@ app.get('/api/teacher/export', async (req, res) => {
       correct: a.is_correct ? 'Oui' : 'Non',
       attempts: a.attempts,
       time: new Date(a.answered_at).toLocaleString('fr-FR'),
-    });
-    const bg = row.number % 2 === 0 ? 'FFF0F4F8' : 'FFFFFFFF';
-    row.eachCell(cell => {
-      cell.font = { name: 'Arial', size: 10 };
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } };
-      cell.alignment = { vertical: 'middle', wrapText: true };
-    });
-    const correctCell = row.getCell('correct');
-    correctCell.font = {
-      name: 'Arial', size: 10, bold: true,
-      color: { argb: a.is_correct ? 'FF1E8449' : 'FFC0392B' }
     };
-    correctCell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    if (a.experiment.startsWith('motricite')) {
+      motriciteSheet.addRow(rowData);
+    } else if (['dorsal', 'ventral', 'nerf'].includes(a.experiment)) {
+      magendieSheet.addRow(rowData);
+    }
   }
 
   // ── Sheet 3: Class stats ───────────────────────────────────────────────────
@@ -290,9 +276,17 @@ app.get('/api/teacher/export', async (req, res) => {
   addStatRow('Expériences terminées', finished.length, true);
   addStatRow('Score moyen de la classe', avgScore !== 'N/A' ? avgScore + '%' : 'N/A', true);
   stats.addRow([]);
-  addStatRow('Résultats par expérience:', '', true);
-
+  addStatRow('Résultats par expérience (Magendie):', '', true);
   for (const exp of experiments) {
+    const expAnswers = answers.filter(a => a.experiment === exp);
+    const correct = expAnswers.filter(a => a.is_correct).length;
+    const pct = expAnswers.length ? ((correct / expAnswers.length) * 100).toFixed(0) + '%' : 'N/A';
+    addStatRow(`  ${expLabels[exp]}`, `${correct}/${expAnswers.length} (${pct})`);
+  }
+
+  stats.addRow([]);
+  addStatRow('Résultats par expérience (Motricité):', '', true);
+  for (const exp of motriciteExps) {
     const expAnswers = answers.filter(a => a.experiment === exp);
     const correct = expAnswers.filter(a => a.is_correct).length;
     const pct = expAnswers.length ? ((correct / expAnswers.length) * 100).toFixed(0) + '%' : 'N/A';

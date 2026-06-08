@@ -4,7 +4,8 @@ import TeacherModal from './components/TeacherModal';
 import LabHeader from './components/LabHeader';
 import Magendie from './components/Magendie';
 import Motricite from './components/Motricite';
-import NotebookZone from './components/NotebookZone';
+import Placeholder1 from './components/Placeholder1';
+import Placeholder2 from './components/Placeholder2';
 import './App.css';
 
 interface QCMOption {
@@ -214,25 +215,19 @@ function App() {
               currentCut={currentCut}
               alertMsg={alertMsg}
               animationTrigger={animationTrigger}
+              observation={observation}
+              qcm={qcm}
+              onValidateQCM={handleValidateQCM}
+              savingStatus={savingStatus}
+              finalScore={finalScore}
             />
           ) : currentExperiment === 'motricite' ? (
-            <Motricite />
-          ) : (
-            <div style={{ padding: '20px', border: '2px dashed #ccc', margin: '20px', textAlign: 'center' }}>
-              <h2>Expérience : {currentExperiment}</h2>
-              <p>Placeholder for {currentExperiment}</p>
-            </div>
-          )}
-          <NotebookZone
-            tool={tool}
-            observation={observation}
-            qcm={qcm}
-            onValidateQCM={handleValidateQCM}
-            completedExperiments={completedExperiments}
-            savingStatus={savingStatus}
-            finalScore={finalScore}
-            currentExperiment={currentExperiment}
-          />
+            <Motricite sessionId={sessionId} />
+          ) : currentExperiment === 'placeholder1' ? (
+            <Placeholder1 />
+          ) : currentExperiment === 'placeholder2' ? (
+            <Placeholder2 />
+          ) : null}
         </div>
       )}
       <TeacherModal isOpen={isTeacherModalOpen} onClose={() => setIsTeacherModalOpen(false)} />
