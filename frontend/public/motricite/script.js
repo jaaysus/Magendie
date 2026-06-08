@@ -532,7 +532,10 @@
       `;
       
       resultBadge.classList.remove('hidden');
-      resultBadge.scrollIntoView({ behavior: 'smooth' });
+      const lessonContentEl = document.getElementById('lessonContent');
+    if (lessonContentEl) {
+    lessonContentEl.scrollTo({ top: lessonContentEl.scrollHeight, behavior: 'smooth' });
+    }
     };
 
     window.restartWholeLab = function() {

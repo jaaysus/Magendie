@@ -88,9 +88,13 @@ app.post('/api/session/finish', (req, res) => {
 
 // ─── TEACHER ROUTES ──────────────────────────────────────────────────────────
 
+const validateTeacher = (req) => {
+  const password = req.headers['x-teacher-password'] || req.body.password;
+  return password === TEACHER_PASSWORD;
+};
+
 app.post('/api/teacher/login', (req, res) => {
-  const { password } = req.body;
-  if (password === TEACHER_PASSWORD) {
+  if (validateTeacher(req)) {
     res.json({ ok: true });
   } else {
     res.status(401).json({ error: 'Mot de passe incorrect' });
@@ -98,8 +102,7 @@ app.post('/api/teacher/login', (req, res) => {
 });
 
 app.get('/api/teacher/stats', (req, res) => {
-  const { password } = req.query;
-  if (password !== TEACHER_PASSWORD) return res.status(401).json({ error: 'Non autorisé' });
+  if (!validateTeacher(req)) return res.status(401).json({ error: 'Non autorisé' });
 
   const sessions = db.prepare(`
     SELECT s.id, s.student_name, s.started_at, s.finished_at, s.score, s.total
@@ -115,16 +118,14 @@ app.get('/api/teacher/stats', (req, res) => {
 });
 
 app.post('/api/teacher/clear-db', (req, res) => {
-  const { password } = req.body;
-  if (password !== TEACHER_PASSWORD) return res.status(401).json({ error: 'Non autorisé' });
+  if (!validateTeacher(req)) return res.status(401).json({ error: 'Non autorisé' });
 
   db.exec('DELETE FROM answers; DELETE FROM sessions;');
   res.json({ ok: true });
 });
 
 app.get('/api/teacher/export', async (req, res) => {
-  const { password } = req.query;
-  if (password !== TEACHER_PASSWORD) return res.status(401).json({ error: 'Non autorisé' });
+  if (!validateTeacher(req)) return res.status(401).json({ error: 'Non autorisé' });
 
   const sessions = db.prepare(`
     SELECT s.id, s.student_name, s.started_at, s.finished_at, s.score, s.total

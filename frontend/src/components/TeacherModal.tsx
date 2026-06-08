@@ -52,11 +52,33 @@ const TeacherModal: React.FC<TeacherModalProps> = ({ isOpen, onClose }) => {
 
       setIsLoggedIn(true);
       // Load stats
-      const statsRes = await fetch(`/api/teacher/stats?password=${encodeURIComponent(password)}`);
+      const statsRes = await fetch('/api/teacher/stats', {
+        headers: { 'X-Teacher-Password': password }
+      });
       const data = await statsRes.json();
       setStats(data);
     } catch {
       setError(true);
+    }
+  };
+
+  const handleDownloadExcel = async () => {
+    try {
+      const res = await fetch('/api/teacher/export', {
+        headers: { 'X-Teacher-Password': password }
+      });
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `resultats_magendie_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch {
+      alert('Erreur lors du téléchargement.');
     }
   };
 
@@ -68,7 +90,10 @@ const TeacherModal: React.FC<TeacherModalProps> = ({ isOpen, onClose }) => {
     try {
       const res = await fetch('/api/teacher/clear-db', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Teacher-Password': password
+        },
         body: JSON.stringify({ password })
       });
       if (res.ok) {
@@ -105,11 +130,14 @@ const TeacherModal: React.FC<TeacherModalProps> = ({ isOpen, onClose }) => {
           </>
         ) : (
           <div id="teacher-panel" style={{ display: 'block', marginTop: '24px' }}>
-            <a
+            <button
               id="download-excel-btn"
-              href={`/api/teacher/export?password=${encodeURIComponent(password)}`}
+              onClick={handleDownloadExcel}
               style={{
                 display: 'block',
+                width: '100%',
+                border: 'none',
+                cursor: 'pointer',
                 textAlign: 'center',
                 padding: '14px',
                 background: 'var(--success)',
@@ -117,11 +145,12 @@ const TeacherModal: React.FC<TeacherModalProps> = ({ isOpen, onClose }) => {
                 borderRadius: '8px',
                 fontWeight: 700,
                 textDecoration: 'none',
-                fontSize: '1rem'
+                fontSize: '1rem',
+                fontFamily: 'inherit'
               }}
             >
               📥 Télécharger les résultats Excel
-            </a>
+            </button>
             {stats && (
               <div id="teacher-stats" style={{ marginTop: '16px', fontSize: '0.9rem', color: 'var(--secondary)' }}>
                 <strong>{stats.sessions.length}</strong> étudiant(s) inscrit(s) · <strong>{stats.sessions.filter(s => s.finished_at).length}</strong> expérience(s) terminée(s)

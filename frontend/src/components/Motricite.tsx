@@ -4,23 +4,13 @@ interface MotriciteProps {
   sessionId?: number | null;
 }
 
-const Motricite: React.FC<MotriciteProps> = ({ sessionId }) => {
+  const Motricite: React.FC<MotriciteProps> = ({ sessionId }) => {
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-      }}
-    >
+    <div style={{ width: "100%", height: "100vh", overflow: "hidden" }}>
       <iframe
         src={`/motricite/index.html${sessionId ? `?sessionId=${sessionId}` : ''}`}
         title="Motricite Lab"
-        style={{
-          width: "100%",
-          height: "100vh",
-          border: "none",
-        }}
+        style={{ width: "100%", height: "100%", border: "none", display: "block" }}
       />
     </div>
   );
