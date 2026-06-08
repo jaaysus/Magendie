@@ -6,7 +6,7 @@ interface MotriciteProps {
 
   const Motricite: React.FC<MotriciteProps> = ({ sessionId }) => {
   return (
-    <div style={{ width: "100%", height: "100vh", overflow: "hidden" }}>
+    <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
       <iframe
         src={`/motricite/index.html${sessionId ? `?sessionId=${sessionId}` : ''}`}
         title="Motricite Lab"
