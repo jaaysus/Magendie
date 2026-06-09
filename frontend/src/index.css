@@ -39,16 +39,43 @@ body {
 header {
     position: relative;
     background-color: var(--primary); color: white;
-    padding: 12px 20px; text-align: center;
+    padding: 8px 16px; text-align: center;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 1100;
     display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
 }
-header h1 { font-family: 'Space Mono', monospace; font-size: 1.1rem; flex: 1; }
+.header-left { min-width: 100px; display: flex; justify-content: flex-start; }
+.header-center { flex: 1; display: flex; align-items: center; gap: 20px; justify-content: center; min-width: 0; }
+.header-right { min-width: 100px; display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
+
+header h1 { 
+    font-family: 'Space Mono', monospace; 
+    font-size: 1.1rem; 
+    white-space: nowrap;
+    margin: 0;
+}
+
+.header-nav { 
+    display: flex; 
+    gap: 8px; 
+    overflow-x: auto; 
+    padding: 4px 0;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+.header-nav::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
+
+.btn-logout { border-color: var(--danger) !important; color: var(--danger) !important; }
+.btn-logout:hover { background: rgba(232, 65, 24, 0.1) !important; }
+
 #student-badge, .student-badge-style {
     background: rgba(255,255,255,0.12);
     padding: 6px 14px; border-radius: 20px;
     font-size: 0.85rem; font-weight: 700;
     white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .nav-btn {
     background: transparent;
@@ -61,9 +88,26 @@ header h1 { font-family: 'Space Mono', monospace; font-size: 1.1rem; flex: 1; }
     font-family: 'DM Sans', sans-serif;
     transition: all 0.2s;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 .nav-btn:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.5); }
 .nav-btn.active { background: rgba(255,255,255,0.2); color: white; border-color: white; }
+
+@media (max-width: 768px) {
+    header { padding: 8px 12px; }
+    header h1 { font-size: 0.9rem; }
+    .header-center { gap: 10px; }
+    .header-left, .header-right { min-width: unset; }
+    .student-badge-style { padding: 6px 10px; font-size: 0.75rem; }
+    .nav-btn { padding: 4px 10px; font-size: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+    header { flex-direction: column; align-items: stretch; gap: 8px; }
+    .header-left, .header-center, .header-right { justify-content: center; width: 100%; }
+    .header-center { flex-direction: column; }
+    .header-nav { width: 100%; justify-content: flex-start; }
+}
 
 #app-container { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 

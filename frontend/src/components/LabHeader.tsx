@@ -19,22 +19,21 @@ const LabHeader: React.FC<LabHeaderProps> = ({ studentName, onOpenTeacher, curre
 
   return (
     <header>
-      <div style={{ width: '120px' }}>
+      <div className="header-left">
         {studentName && (
           <button 
-            className="nav-btn" 
+            className="nav-btn btn-logout" 
             onClick={onLogout}
-            style={{ borderColor: 'var(--danger)', color: 'var(--danger)' }}
           >
             🚪 Quitter
           </button>
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+      <div className="header-center">
         <h1>🔬 Virtual Lab</h1>
         {studentName && (
-          <nav style={{ display: 'flex', gap: '10px' }}>
+          <nav className="header-nav">
             {navItems.map(item => (
               <button
                 key={item.id}
@@ -48,7 +47,7 @@ const LabHeader: React.FC<LabHeaderProps> = ({ studentName, onOpenTeacher, curre
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', alignItems: 'center', width: 'auto' }}>
+      <div className="header-right">
         {studentName && <span className="student-badge-style">👤 {studentName}</span>}
 
         {!isStudentLoggedIn && (
